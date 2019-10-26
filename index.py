@@ -9,8 +9,6 @@ Created on Wed Aug 28 19:08:30 2019
 import xml.sax
 import re
 import os
-#nltk.download('punkt')
-#nltk.download('stopwords')
 from nltk.tokenize import  word_tokenize 
 from nltk.corpus import stopwords
 from Stemmer import Stemmer
@@ -212,8 +210,8 @@ class data_Handler( xml.sax.ContentHandler ):
 					elif x == 'category':
 						output[k]['c'].append([count,data_dict[x][k]])
 		
-
 		if count%5000 == 0:
+			print(count)
 			self.write_file_index()
 		del(data_dict)
 
@@ -222,7 +220,8 @@ class data_Handler( xml.sax.ContentHandler ):
 			for key_sub in output[key]:
 					output[key][key_sub].sort(key = lambda x: x[1])
 		index = str(math.ceil(count/5000))+'index.txt' 
-		title_str = str(math.ceil(count/5000))+'title.txt'
+		#title_str = str(math.ceil(count/5000))+'title.txt'
+		title_str = 'title.txt'
 		output_pat = os.path.join(index_path, index)
 		title_path = os.path.join(index_path, title_str)
 		
@@ -389,13 +388,13 @@ def build_index(path, output_path):
 	saxparser.parse(os.path.abspath(path),)    
 	ch.write_file_index()
 	title_path = os.path.join(os.path.abspath(output_path),"title.txt")
-	#global title
+	global title
 	with open(title_path, 'w+') as f:
-		for t in sorted(title):
+		for t in title:
 			f.write("{0}".format(t)) 
 			f.write("\n")
-	title.clear()
 	f.close()
+	title.clear()
 	# Counting the number of files 
 	f_n = math.ceil(count/5000)
 	number_index = ch.merge_files(int(f_n))
@@ -406,9 +405,7 @@ def main():
 	path_to_wikidump = sys.argv[1]
 	output_path = sys.argv[2]
 	build_index(path_to_wikidump,output_path)
-	
-	
-	
+		
 if __name__ == '__main__':
 	main()
 
